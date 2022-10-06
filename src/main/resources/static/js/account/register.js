@@ -21,13 +21,30 @@ registerButton.onclick = () => {
         data: JSON.stringify(user),                                                     //전송할 데이터가 있으면
         dataType: "json", /* 응답받을 데이터 타입(리턴타입). 오브젝트 객체니까 제이슨 */          //json외 text 등을 사용할 수 있지만 json 사용
         success: (response) => {                                                        //성공시에 실행될 메소드
-            alert("회원가입 요청 성공");
         },
         error: (error) => {                                                                //실패시에 실행될 메소드
-            alert("회원가입 요청 실패");
-            console.log(error.responseJSON);
+            console.log(error.responseJSON.data);
+            loadErrorMessage(error.responseJSON.data);
         }
     }
 
     $.ajax(ajaxOption);
+}
+
+function loadErrorMessage(errors) {
+    const errorList = document.querySelector(".errors");
+    const errorMsgs = document.querySelector(".error-msgs");
+    const errorArray = Object.values(errors); 
+
+    errorMsgs.innerHTML = "";
+
+    errorArray.forEach(error => {
+        errorMsgs.innerHTML +=`
+            <li>${error}</li>
+        `;
+    });
+
+    errorList.classList.remove("errors-invisible")
+
+
 }
