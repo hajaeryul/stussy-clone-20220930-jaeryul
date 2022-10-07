@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Aspect
-@Component //di ? ioc ? 안배웠으니까 그냥 달아라 !
+@Component
 public class ValidationAop {
 
     @Pointcut("execution(* com.stussy.stussyclone20220930jaeryul..*Api.*(..))") //패키지는 .. 클래스 메소드 * 매개변수는 (..)
@@ -29,7 +29,6 @@ public class ValidationAop {
         BeanPropertyBindingResult bindingResult = null;
 
         for(Object arg : args) {
-            System.out.println(arg);
             if(arg.getClass() == BeanPropertyBindingResult.class) {
                bindingResult = (BeanPropertyBindingResult) arg;
                break;
@@ -42,8 +41,6 @@ public class ValidationAop {
 
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             for(FieldError fieldError : fieldErrors) {
-                System.out.println("필드명: " + fieldError.getField());
-                System.out.println("에러 메세지: " + fieldError.getDefaultMessage());
                 errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
 
             }

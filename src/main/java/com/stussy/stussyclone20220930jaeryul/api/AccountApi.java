@@ -1,5 +1,6 @@
 package com.stussy.stussyclone20220930jaeryul.api;
 
+import com.stussy.stussyclone20220930jaeryul.aop.annotation.LogAspect;
 import com.stussy.stussyclone20220930jaeryul.dto.CMRespDto;
 import com.stussy.stussyclone20220930jaeryul.dto.RegisterReqDto;
 import com.stussy.stussyclone20220930jaeryul.dto.validation.ValidationSequence;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RestController
 public class AccountApi {
 
+    @LogAspect
     @PostMapping("/register")
     public ResponseEntity<?> register(@Validated(ValidationSequence.class) @RequestBody RegisterReqDto registerReqDto, BindingResult bindingResult) {
 

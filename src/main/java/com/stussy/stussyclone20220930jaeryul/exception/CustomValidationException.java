@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.Map;
 
 @Getter//에러맵에있는 데이터 뽑아오기위해서
-public class CustomValidationException  extends RuntimeException {
+public class CustomValidationException extends RuntimeException {
 
     private Map<String, String> errorMap;
 
