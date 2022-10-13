@@ -7,6 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface AccountRepository {
 
     public User findUserByEmail(String email) throws Exception;
-    public int saveUser(User user) throws Exception;
+    public int saveUser(User user) throws Exception; //insert가 됐으면 1, 아니면 0 결과 가져옴
 
 }

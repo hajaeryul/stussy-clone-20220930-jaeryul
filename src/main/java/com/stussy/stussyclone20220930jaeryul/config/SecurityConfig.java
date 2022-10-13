@@ -21,7 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll() // 권한을 부여해라 (허용해라)
                 .and() // 이 앞까지가 authorizeRequest 설정임.
                 .formLogin() // 여기서부터 formLogin 설정이야
-                .loginPage("/account/login") // 인증이 필요하면 폼로그인 시키는데, () 페이지로 보내라
+                .loginPage("/account/login") // 인증이 필요하면 폼로그인 시키는데, () 페이지로 보내라...login page Get 요청
+                .loginProcessingUrl("/account/login") // login service Post 요청
                 .defaultSuccessUrl("/index"); //
     }
 }

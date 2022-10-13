@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,15 +28,16 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AccountApi {
 
-    private final AccountService accountService;
+    private final AccountService accountService;//이녀석은 ioc에서 @requiredArgsConstructor로 들고왔다.
 
     @LogAspect
     @PostMapping("/register")
     public ResponseEntity<?> register(@Validated(ValidationSequence.class) @RequestBody RegisterReqDto registerReqDto,
                                       BindingResult bindingResult) throws Exception {
 
+        accountService.duplicateEmail(registerReqDto);//여기서 exception이 안터지면 밑으로 내려감~
         accountService.register(registerReqDto);
 
-        return ResponseEntity.ok().body(new CMRespDto<>("회원가입 성공", registerReqDto));
+        return ResponseEntity.created(URI.create("/account/login")).body(new CMRespDto<>("회원가입 성공", registerReqDto.getEmail()));
     }
 }

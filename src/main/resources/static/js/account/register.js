@@ -10,7 +10,7 @@ registerButton.onclick = () => {
         password: accountInputs[3].value
     }
 
-    //JSON.stinrgify() -> js객체를 JSON문자열로 변환 (텍스트인데 JSON이다)
+    //JSON.stringify() -> js객체를 JSON문자열로 변환 (텍스트인데 JSON이다)
     //JSON.parse()     -> JSON문자열을 js객체로 변환
 
     let ajaxOption = {
@@ -20,9 +20,12 @@ registerButton.onclick = () => {
         contentType: "application/json",                                                //전송 데이터가 json인경우
         data: JSON.stringify(user),                                                     //전송할 데이터가 있으면
         dataType: "json", /* 응답받을 데이터 타입(리턴타입). 오브젝트 객체니까 제이슨 */          //json외 text 등을 사용할 수 있지만 json 사용
-        success: (response) => {    alert("성공")                                                    //성공시에 실행될 메소드
+        success: (response, textStatus, request) => {                                                   //성공시에 실행될 메소드
+            console.log(response);
+            const successURI = request.getResponseHeader("Location");
+            location.replace(successURI + "?email=" + response.data);
         },
-        error: (error) => {            alert("실패")                                                   //실패시에 실행될 메소드
+        error: (error) => {                                                             //실패시에 실행될 메소드
             console.log(error.responseJSON.data);
             loadErrorMessage(error.responseJSON.data);
         }
