@@ -36,7 +36,7 @@ public class RegisterReqDto {
     public User toEntity() {
         return User.builder()
                 .email(email)
-                .password(new BCryptPasswordEncoder().encode(password))
+                .password(new BCryptPasswordEncoder().encode(password))//패스워드 암호화 해서 db에 저장.
                 .name(firstName + lastName)
                 .role_id(1)
                 .build();
