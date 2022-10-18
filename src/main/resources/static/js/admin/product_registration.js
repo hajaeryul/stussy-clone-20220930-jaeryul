@@ -71,7 +71,7 @@ const RegisterRequestService = {
 
         $.ajax({
             async: false,
-            type: "posdt",
+            type: "post",
             url: "/api/admin/product",
             contentType: "application/json",
             data: JSON.stringify(RegisterObj),
