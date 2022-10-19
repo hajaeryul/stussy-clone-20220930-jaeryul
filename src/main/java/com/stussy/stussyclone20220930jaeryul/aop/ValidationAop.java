@@ -18,10 +18,12 @@ import java.util.Map;
 @Component
 public class ValidationAop {
 
-    @Pointcut("execution(* com.stussy.stussyclone20220930jaeryul..*Api.*(..))") //패키지는 .. 클래스 메소드 * 매개변수는 (..)
-    private void executionPointCut() {} //포인트컷은 어라운드 안에 써도 되지만 밖에 꺼내주자 !
+//    @Pointcut("execution(* com.stussy.stussyclone20220930jaeryul..*Api.*(..))") //패키지는 .. 클래스 메소드 * 매개변수는 (..)
+//    private void executionPointCut() {} //포인트컷은 어라운드 안에 써도 되지만 밖에 꺼내주자 !
+    @Pointcut("@annotation(com.stussy.stussyclone20220930jaeryul.aop.annotation.ValidAspect)")
+    private void annotationPointCut() {}
 
-    @Around("executionPointCut()")
+    @Around("annotationPointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Object[] args = joinPoint.getArgs();//getArgs로 매개변수 가져오기 ! AccountApi에 있는..
