@@ -1,6 +1,7 @@
 package com.stussy.stussyclone20220930jaeryul.service.admin;
 
 import com.stussy.stussyclone20220930jaeryul.dto.admin.CategoryResponseDto;
+import com.stussy.stussyclone20220930jaeryul.dto.admin.ProductMstOptionRespDto;
 import com.stussy.stussyclone20220930jaeryul.dto.admin.ProductRegisterReqDto;
 import com.stussy.stussyclone20220930jaeryul.exception.CustomInternalServerErrorException;
 import com.stussy.stussyclone20220930jaeryul.repository.admin.ProductManagementRepository;
@@ -16,7 +17,6 @@ import java.util.List;
 public class ProductManagementServiceImpl implements ProductManagementService {
 
     private final ProductManagementRepository productManagementRepository;
-
     @Override
     public List<CategoryResponseDto> getCategoryList() throws Exception {
         List<CategoryResponseDto> categoryResponseDtos = new ArrayList<CategoryResponseDto>();
@@ -31,5 +31,15 @@ public class ProductManagementServiceImpl implements ProductManagementService {
         if(productManagementRepository.saveProductMst(productRegisterReqDto.toEntity()) ==0 ) {
             throw new CustomInternalServerErrorException("상품 등록 실패");
         }
+    }
+
+    @Override
+    public List<ProductMstOptionRespDto> getProductMstList() throws Exception {
+        List<ProductMstOptionRespDto> list = new ArrayList<ProductMstOptionRespDto>();
+        productManagementRepository.getProductMstList().forEach(pdtMst -> {
+           list.add(pdtMst.toDto());
+        });
+
+        return list;
     }
 }
