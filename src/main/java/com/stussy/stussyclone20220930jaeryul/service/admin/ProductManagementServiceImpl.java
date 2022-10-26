@@ -1,16 +1,17 @@
 package com.stussy.stussyclone20220930jaeryul.service.admin;
 
-import com.stussy.stussyclone20220930jaeryul.dto.admin.CategoryResponseDto;
-import com.stussy.stussyclone20220930jaeryul.dto.admin.ProductMstOptionRespDto;
-import com.stussy.stussyclone20220930jaeryul.dto.admin.ProductRegisterReqDto;
+import com.stussy.stussyclone20220930jaeryul.dto.admin.*;
 import com.stussy.stussyclone20220930jaeryul.exception.CustomInternalServerErrorException;
+import com.stussy.stussyclone20220930jaeryul.exception.CustomValidationException;
 import com.stussy.stussyclone20220930jaeryul.repository.admin.ProductManagementRepository;
 import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +42,32 @@ public class ProductManagementServiceImpl implements ProductManagementService {
         });
 
         return list;
+    }
+
+    @Override
+    public List<?> getSizeList(int productId) throws Exception {
+        List<ProductSizeOptionRespDto> list = new ArrayList<ProductSizeOptionRespDto>();
+        productManagementRepository.getSizeList(productId).forEach(size -> {
+            list.add(size.toDto());
+        });
+
+        return list;
+    }
+    @Override
+    public void checkDuplicatedColor(ProductRegisterDtlReqDto productRegisterDtlReqDto) throws Exception {
+        if(productManagementRepository.findProductColor(productRegisterDtlReqDto.toEntity()) > 0) {
+            Map<String, String> errorMap = new HashMap<String, String>();
+            errorMap.put("error", "이미 등록된 상품입니다.");
+            throw new CustomValidationException("Duplicated Error", errorMap);
+        };
+
+    }
+
+    @Override
+    public void registerDtl(ProductRegisterDtlReqDto productRegisterDtlReqDto) throws Exception {
+        if(productManagementRepository.saveProductDtl(productRegisterDtlReqDto.toEntity()) == 0) {
+            throw new CustomInternalServerErrorException("상품 등록 오류");
+        }
+
     }
 }
