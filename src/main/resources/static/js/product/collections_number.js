@@ -58,7 +58,7 @@ class PageNumber {
     createPreButton() {
         if(this.#page != 1) {
             this.#pageNumberList.innerHTML += `
-            <a href=""><li>&#60;</li></a>
+            <a href="javascript:void(0)"><li>&#60;</li></a>
             `;
 
         }
@@ -78,7 +78,7 @@ class PageNumber {
     createNextButton() {
         if(this.#page != this.#maxPageNumber) {
             this.#pageNumberList.innerHTML += `
-            <a href=""><li>&#62;</li></a>
+            <a href="javascript:void(0)"><li>&#62;</li></a>
             `;
         }
     }
