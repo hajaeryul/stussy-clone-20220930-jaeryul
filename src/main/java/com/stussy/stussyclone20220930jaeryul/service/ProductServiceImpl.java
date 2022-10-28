@@ -1,6 +1,9 @@
 package com.stussy.stussyclone20220930jaeryul.service;
 
+import com.stussy.stussyclone20220930jaeryul.domain.Product;
 import com.stussy.stussyclone20220930jaeryul.dto.CollectionListRespDto;
+import com.stussy.stussyclone20220930jaeryul.dto.ProductRespDto;
+import com.stussy.stussyclone20220930jaeryul.exception.CustomValidationException;
 import com.stussy.stussyclone20220930jaeryul.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,5 +31,55 @@ public class ProductServiceImpl implements ProductService {
         });
 
         return productList;
+    }
+
+    @Override
+    public ProductRespDto getProduct(int pdtId) throws Exception {
+        Product product = productRepository.getProduct(pdtId);
+
+        if(product == null) {
+            Map<String, String> errormap = new HashMap<String, String>();
+            errormap.put("error", "등록되지 않은 상품입니다.");
+            throw new CustomValidationException("Get Product Error", errormap);
+        }
+
+        Map<String, List<Map<String, Object>>> pdtColors = new HashMap<String, List<Map<String, Object>>>();
+        List<String> pdtImgs = new ArrayList<String>();
+
+        product.getPdt_dtls().forEach(dtl -> {
+            if(!pdtColors.containsKey(dtl.getPdt_color())) { // 키값(색상)이 중복되지 않으면 arrayList(사이즈 리스트)를 만들어라 ~
+                pdtColors.put(dtl.getPdt_color(), new ArrayList<Map<String, Object>>());
+            }
+        });
+
+        product.getPdt_imgs().forEach(img -> {
+            pdtImgs.add(img.getSave_name());
+        });
+
+        product.getPdt_dtls().forEach(dtl -> {
+            Map<String, Object> pdtIdAndSize = new HashMap<String, Object>();
+            pdtIdAndSize.put("pdtDtlId", dtl.getId());
+            pdtIdAndSize.put("sizeId", dtl.getSize_id());
+            pdtIdAndSize.put("sizeName", dtl.getSize_name());
+            pdtIdAndSize.put("pdtStock", dtl.getPdt_stock());
+
+           pdtColors.get(dtl.getPdt_color()).add(pdtIdAndSize); // dtl에서 같은 색상에만 size를 넣는것이다
+        });
+
+        ProductRespDto dto = ProductRespDto.builder()
+                .pdtId(product.getId())
+                .pdtName(product.getPdt_name())
+                .pdtPrice(product.getPdt_price())
+                .pdtSimpleInfo(product.getPdt_simple_info())
+                .pdtDetailInfo(product.getPdt_detail_info())
+                .pdtOptionInfo(product.getPdt_option_info())
+                .pdtManagementInfo(product.getPdt_management_info())
+                .pdtShippingInfo(product.getPdt_shipping_info())
+                .pdtColors(pdtColors)
+                .pdtImgs(pdtImgs)
+                .build();
+
+
+        return dto;
     }
 }

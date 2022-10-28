@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ProductDetail {
+public class ProductImg {
     private int id;
     private int pdt_id;
-    private int size_id;
-    private String size_name;
-    private String pdt_color;
-    private int pdt_stock;
+    private String origin_name;
+    private String save_name;
 }

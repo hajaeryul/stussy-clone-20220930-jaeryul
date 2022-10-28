@@ -1,22 +1,31 @@
 package com.stussy.stussyclone20220930jaeryul.service.admin;
 
+import com.stussy.stussyclone20220930jaeryul.domain.ProductImg;
 import com.stussy.stussyclone20220930jaeryul.dto.admin.*;
 import com.stussy.stussyclone20220930jaeryul.exception.CustomInternalServerErrorException;
 import com.stussy.stussyclone20220930jaeryul.exception.CustomValidationException;
 import com.stussy.stussyclone20220930jaeryul.repository.admin.ProductManagementRepository;
 import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductManagementServiceImpl implements ProductManagementService {
 
+    private final ResourceLoader resourceLoader;
     private final ProductManagementRepository productManagementRepository;
     @Override
     public List<CategoryResponseDto> getCategoryList() throws Exception {
@@ -69,5 +78,64 @@ public class ProductManagementServiceImpl implements ProductManagementService {
             throw new CustomInternalServerErrorException("상품 등록 오류");
         }
 
+    }
+
+    @Override
+    public void registerImg(ProductImgReqDto productImgReqDto) throws Exception {
+        log.info("pdtId >>>>" + productImgReqDto.getPdtId());
+
+        if(productImgReqDto.getFiles() == null) {
+            Map<String, String> errorMap = new HashMap<String, String>();
+            errorMap.put("error", "이미지를 선택하지 않았습니다.");
+            throw new CustomValidationException("Img Error", errorMap);
+        }
+
+        List<ProductImg> productImgs = new ArrayList<ProductImg>();
+
+
+        productImgReqDto.getFiles().forEach(file -> {
+            Resource resource = resourceLoader.getResource("classpath:static/upload/product");
+            String filePath = null;
+
+            try {
+                if(!resource.exists()) {
+                    String tempPath = resourceLoader.getResource("classpath:static").getURI().toString();
+                    tempPath = tempPath.substring(tempPath.indexOf("/") + 1);
+
+                    File f = new File( tempPath + "/upload/product");
+                    f.mkdirs();
+                }
+                filePath = resource.getURI().toString();
+                filePath = filePath.substring(filePath.indexOf("/") + 1);
+                System.out.println(filePath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            String originName = file.getOriginalFilename();
+            String extension = originName.substring(originName.lastIndexOf("."));
+            String saveName = UUID.randomUUID().toString().replaceAll("-","") + extension;
+
+
+            Path path = Paths.get(filePath + "/" + saveName);
+
+            File f = new File(filePath + "/product"); //중간에 폴더가 없어서 오류나는걸 방지하기위해.
+            if(!f.exists()) {
+                f.mkdirs(); //s 붙은건 하위경로를 다 만들어줌
+            }
+
+            try {
+                Files.write(path, file.getBytes());
+            } catch (IOException e) {
+                throw new CustomInternalServerErrorException(e.getMessage());
+            }
+
+            productImgs.add(ProductImg.builder()
+                            .pdt_id(productImgReqDto.getPdtId())
+                            .origin_name(originName)
+                            .save_name(saveName)
+                            .build());
+        });
+
+        productManagementRepository.saveProductImg(productImgs);
     }
 }
