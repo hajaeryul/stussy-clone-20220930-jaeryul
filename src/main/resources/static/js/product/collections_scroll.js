@@ -36,8 +36,14 @@ class CollectionsApi {
 }
 
 class PageScroll {
-    constructor() {
-        this.addScrollPagingEvent();
+
+    static #instatnce = null;
+
+    static getInstance() {
+        if(this.#instatnce == null) {
+            this.#instatnce = new PageScroll();
+        }
+        return this.#instatnce;
     }
 
     addScrollPagingEvent() {
@@ -69,11 +75,18 @@ class CollectionsService {
         return this.#instatnce;
     }
 
+    pdtIdList = null;
+
     collectionsEntity = {
         page: 1,
         totalCount: 0,
         maxPage: 0
     }
+
+    constructor() {
+        this.pdtIdList = new Array();
+    }
+
 
     loadCollections() {
         if(this.collectionsEntity.page == 1 || this.collectionsEntity.page < Number(this.collectionsEntity.maxPage) + 1) {
@@ -97,6 +110,7 @@ class CollectionsService {
         const collectionProducts = document.querySelector(".collection-products");
         
         responseData.forEach(product => {
+            this.pdtIdList.push(product.productId);
             collectionProducts.innerHTML += `
             <li class="collection-product">
                 <div class="product-img">
@@ -110,11 +124,22 @@ class CollectionsService {
                 </div>
             </li>
             `;
+        });
+        this.addProductListEvent();
+    }
+
+    addProductListEvent() {
+        const collectionProducts = document.querySelectorAll(".collection-product");
+
+        collectionProducts.forEach((product, index) => {
+            product.onclick = () => {
+                location.href = "/product/" + this.pdtIdList[index];
+            }
         })
     }
 }
 
 window.onload = () => {
     CollectionsService.getInstance().loadCollections();
-    new PageScroll();
+    PageScroll.getInstance().addScrollPagingEvent();
 }
