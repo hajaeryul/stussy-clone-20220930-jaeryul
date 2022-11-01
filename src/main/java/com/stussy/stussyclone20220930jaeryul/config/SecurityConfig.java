@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.httpBasic().disable(); //로그인창 안쓰겠다.
         http.authorizeRequests() // 모든 요청이 들어오면
-                .antMatchers("/account/mypage", "/index") // () 주소로 요청이 들어오면
+                .antMatchers("/account/mypage", "/index", "/checkout") // () 주소로 요청이 들어오면
                 .authenticated() // 인증을 거쳐라
 //                .antMatchers("/admin/**") // 이 주소의 하위로 어떤 주소가 들어오던간에
 //                .hasRole("ADMIN") // Admin 이어야함!!

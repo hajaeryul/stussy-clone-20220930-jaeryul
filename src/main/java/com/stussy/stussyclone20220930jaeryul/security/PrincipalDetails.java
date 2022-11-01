@@ -1,12 +1,14 @@
 package com.stussy.stussyclone20220930jaeryul.security;
 
 import com.stussy.stussyclone20220930jaeryul.domain.User;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Data
 public class PrincipalDetails implements UserDetails {
 
     private User user;
@@ -17,9 +19,9 @@ public class PrincipalDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> autorities = new ArrayList<GrantedAuthority>();
-        autorities.add(() -> user.getRole().getName());//화살표 뒤가 GrantedAuthority 객체... 생성하면서 메소드 정의도 하는 중
-        return autorities;
+        Collection<GrantedAuthority> authorities  = new ArrayList<GrantedAuthority>();
+        authorities .add(() -> user.getRole().getName());//화살표 뒤가 GrantedAuthority 객체... 생성하면서 메소드 정의도 하는 중
+        return authorities ;
     }
 
     @Override
