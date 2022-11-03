@@ -47,6 +47,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userInfoEndpoint()
                 .userService(principalOauth2Service)
                 .and()//이까지 oauth
-                .defaultSuccessUrl("/index");
+                .defaultSuccessUrl("/index");//account/login 으로 로그인 성공하면 갈 페이지가 없기 때문에 ...
     }
 }
