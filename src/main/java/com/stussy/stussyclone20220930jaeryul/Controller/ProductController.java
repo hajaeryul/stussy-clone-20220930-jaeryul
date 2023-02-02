@@ -18,7 +18,7 @@ public class ProductController {
 
     @GetMapping("/collections/{category}")
     public String loadCollections(@PathVariable String category) {
-        return "product/collections_scroll";
+        return "product/collections_number";
     }
 
     @GetMapping("/product/{pdtId}")
